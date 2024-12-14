@@ -5,4 +5,4 @@ class Client:
         self.is_vip = is_vip # флаг VIP-статуса
     
     def __str__(self): # Магический метод 
-        return f'Client {self.name} (VIP: {self.is_vip}) with cargo_weight {self.cargo_weight}'
+        print(f"Клиент {self.name} (VIP: {self.is_vip}) с весом {self.cargo_weight}")
