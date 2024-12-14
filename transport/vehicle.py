@@ -1,26 +1,34 @@
-from client import Client  # Импорт класса Client
+
+from transport.client import Client
+import random 
+
+def validation(prompt):
+    while(True):
+        num = input(prompt)
+        if num.isdigit():
+            return int(num)
+        else: 
+            return "Введите необходимую информацию числом!"
+
 
 class Vehicle:
-    next_id = 1  # Генерации ID
-
-    def __init__(self, capacity, vehicle_id = None, current_load = 0, clients_list = None):
-        if vehicle_id is None:
-            self.vehicle_id = f"{Vehicle.next_id}"  # Генерация нового ID
-            Vehicle.next_id += 1
-        else:
-            self.vehicle_id = vehicle_id  # Использование существующего ID
-
-        self.capacity = capacity  # Грузоподъемность транспортного средства
-        self.current_load = current_load  # Текущая загрузка
-        self.clients_list = clients_list if clients_list is not None else []  # Список клиентов
+    def __init__(self, capacity = 0, current_load = 0):
+        self.vehicle_id = random.randint(100, 10000)
+        self.capacity = validation("Введите грузоподъёмность транспорта (числом): ") # Грузоподъёмность
+        self.current_load = validation("Введите текущую загрузку(числом): ") # Текущая загрузка
+        self.clients_list = []
 
     def load_cargo(self, client):
-        if not isinstance(client, Client):
-            raise ValueError("Invalid client")  # Проверка типа клиента
-        if self.current_load + client.cargo_weight > self.capacity:
-            raise ValueError("Capacity exceeded")  # Проверка грузоподъемности
-        self.current_load += client.cargo_weight  # Увеличение текущей загрузки
-        self.clients_list.append(client)  # Добавление клиента в список
-
-    def __str__(self): # Магический метод
-        return f'Vehicle ID: {self.vehicle_id}, Capacity: {self.capacity} tons, Current Load: {self.current_load} tons'
+        try:
+            new_weight = self.current_load + client.cargo_weight
+        except AttributeError:
+            raise AttributeError("Вы должны передать клиента в параметр функции!")
+        if new_weight > self.capacity:
+            print("Грузоподъемность превышена! Действие отменено!")
+        else:
+            self.current_load = new_weight
+            self.clients_list.append(client)
+            
+    def __str__(self):
+        return f"ID транспорта: {self.vehicle_id}, грузоподъёмность в тоннах: {self.capacity}, текущая загрузка: {self.current_load}"
+    
