@@ -1,9 +1,9 @@
-from .vehicle import Vehicle
+from .vehicle import Vehicle # Импорт класс Vehicle
 
 class Van(Vehicle):
     def __init__(self, is_refrigerated):
-        super().__init__()
+        super().__init__(self, is_refrigerated)
         self.is_refrigerated = is_refrigerated
 
     def __str__(self):
-        return super().__str__() + f"Холодильник: {"есть" if self.is_refrigerated == True else "нет"}"
+        return super().__str__() + f"\nХолодильник: {"есть" if self.is_refrigerated == True else "нет"}"
