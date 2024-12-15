@@ -1,4 +1,4 @@
-from transport import Client,Vehicle,TransportCompany,Van,Airplane 
+from transport import Client, Vehicle, TransportCompany, Van, Airplane 
 
 start = True
 count = 0  # Счетчик для всех действий
