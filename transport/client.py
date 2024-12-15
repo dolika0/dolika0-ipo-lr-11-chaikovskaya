@@ -6,3 +6,4 @@ class Client:
     
     def __str__(self): # Магический метод 
         print(f"Клиент {self.name} (VIP: {self.is_vip}) с весом {self.cargo_weight}")
+
