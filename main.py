@@ -24,8 +24,7 @@ def menu(): # готово
         2 - Добавить транспорт
         3 - Вывести информацию о всех транспортах
         4 - Вывести информацию о всех клиентах
-        5 - Вывести информацию о всех компаниях
-        6 - Выход с программы\n""")
+        5 - Выход с программы\n""")
     
     print(f"".center(70, "="))    
     print()
@@ -108,7 +107,7 @@ def printAllClients(): # готово
         vip = "Есть" if client.is_vip == True else "Нет"
         print(f"{id}. Имя: {client.name}. Вес груза: {client.cargo_weight}. VIP-статус: {vip} ")
     print()
-
+    
 
 def main():
     global start, count
@@ -116,6 +115,9 @@ def main():
     company = createCompany(name)
 
     while start:
+        name = input("Введите название транспортной компании: ")
+        company = createCompany(name)
+
         menu()
         num = validation("Выберите необходимый пункт: ")
 
@@ -135,11 +137,7 @@ def main():
             printAllClients()
             count += 1
 
-        elif num == 5:  # Вывод всех компаний
-            print(f"Название компании: {company.name}")
-            count += 1
-
-        elif num == 6: # Управление компаниями
+        elif num == 5: # Управление компаниями
             start = False
             print(f"Выход из программы. Количество проведедённых операций : {count}.")
             break        
