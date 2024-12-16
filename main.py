@@ -110,6 +110,9 @@ def printAllClients(): # готово
     print()
     
 
+def optimizeCargoDistribution():
+    pass
+
 def main():
     global start, count
     name = input("Введите название транспортной компании: ")
