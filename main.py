@@ -4,10 +4,10 @@ start = True
 count = 0  # Счетчик для всех действий
 all_clients = []
 all_vehicles = []
-all_company = []
+company_list = []
+id = 0 # Номер клиента
 
-
-def validation(prompt):
+def validation(prompt): # готово
     while True:
         num = input(prompt)
         if num.isdigit():
@@ -16,7 +16,7 @@ def validation(prompt):
             print("Введите необходимую информацию числом!")
 
 
-def menu():
+def menu(): # готово
     print()
     print(f" Меню ".center(70, "="))
     print("""
@@ -25,18 +25,18 @@ def menu():
         3 - Вывести информацию о всех транспортах
         4 - Вывести информацию о всех клиентах
         5 - Вывести информацию о всех компаниях
-        6 - Управление компаниями
-        7 - Выход с программы\n""")
+        6 - Выход с программы\n""")
+    
     print(f"".center(70, "="))    
     print()
 
-
-def createCompany(name):
+ 
+def createCompany(name): # вроде готво
     company = TransportCompany(name)
     return company
 
 
-def createClient(company):  # Создание клиента
+def createClient():  # Создание клиента # готово
     name = input("Введите имя клиента:")
     cargo_weight = validation("Введите вес груза клиента:")
 
@@ -48,17 +48,20 @@ def createClient(company):  # Создание клиента
         else:
             print("Введите 1, если клиент имеет VIP. Если нет, введите 2.")
 
-    company.add_client(Client(name, cargo_weight, is_vip))
+    all_clients.append(Client(name, cargo_weight, is_vip))
+    print("Клиент успешно создан!")
 
 
-def createTransport(company):  # Добавление транспорт
+def createTransport():  # Добавление транспорт # готово
     while True:
-        type_veh = validation("Выберите транспорт для добавления(1 - самолет, 2 - фургон): ")
+        global type_veh
+        type_veh = validation("\nВыберите транспорт для добавления(1 - самолет, 2 - фургон): ")
 
         if type_veh == 1:
             capacity = validation("Введите грузоподъёмность самолёта: ")
             max_altitude = validation("Введите максимальную высоту полета: ")
-            company.add_vehicle(Airplane(capacity, max_altitude))
+            all_vehicles.append(Airplane(capacity, max_altitude))
+            print("Самолёт успешно создан!")
             break
 
         elif type_veh == 2:
@@ -70,32 +73,41 @@ def createTransport(company):  # Добавление транспорт
                     break
                 else:
                     print("Введите 1, если есть холодильник, 2 если нет.")
-
-            company.add_vehicle(Van(capacity, is_refrigerated))
+            all_vehicles.append(Van(capacity, is_refrigerated))
+            print("Фургон успешно создан!")
             break
 
         else:
             print("Выберите 1, если хотите добавить самолет, 2 - если фургон.")
 
 
-def printAllTransport(company):
+def printAllTransport(): # готово
+    idVeh = 0 # Номер транспорта
+    global typeVeh
+    print()
     print("Все транспортные средства: ".center(70, "="))
-    for vehicle in company.vehicles:
-        print(vehicle)
-
-
-def printAllClients(company):
-    print("Все клиенты: ".center(70, "="))
-    for client in company.clients:
-        print(client)
+    print()
+    for vehicle in all_vehicles:
+        idVeh += 1
+        global type_veh
+        if type_veh == 1:
+            typeVeh = "самолёт" 
+        else:
+            typeVeh = "фургон" 
+        print(f"{idVeh}) {vehicle}")
     print()
 
-def companyMenu():
-    print(f"1 - Создать компанию")
-    print(f"2 - Добавить транспортное средство в компанию")
-    print(f"3 - Список всех транспортных средств компании")
-    print(f"4 - Добавить клиента в компанию")
-    print(f"5 - Распределить грузы клиентов по транспортным средствам")
+
+def printAllClients(): # готово
+    global id
+    print()
+    print("Все клиенты: ".center(70, "="))
+    print()
+    for client in all_clients:
+        id += 1
+        vip = "Есть" if client.is_vip == True else "Нет"
+        print(f"{id}. Имя: {client.name}. Вес груза: {client.cargo_weight}. VIP-статус: {vip} ")
+    print()
 
 
 def main():
@@ -108,19 +120,19 @@ def main():
         num = validation("Выберите необходимый пункт: ")
 
         if num == 1:  # Создание клиента
-            createClient(company)
+            createClient()
             count += 1
 
         elif num == 2:  # Добавление транспорт
-            createTransport(company)
+            createTransport()
             count += 1
 
         elif num == 3:  # Вывод всех транспортных средств
-            printAllTransport(company)
+            printAllTransport()
             count += 1
 
         elif num == 4:  # Вывод всех клиентов
-            printAllClients(company)
+            printAllClients()
             count += 1
 
         elif num == 5:  # Вывод всех компаний
@@ -128,12 +140,11 @@ def main():
             count += 1
 
         elif num == 6: # Управление компаниями
-            companyMenu()
-
-        elif num == 7:  # Выход из программы
             start = False
-            print("Выход из программы.")
-            break
-
+            print(f"Выход из программы. Количество проведедённых операций : {count}.")
+            break        
+        
+        else:
+            print("Выберите один из предложенных пунктов!!!")
 
 main()
