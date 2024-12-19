@@ -1,13 +1,12 @@
-from transport import Client, Vehicle, TransportCompany, Van, Airplane 
+from transport import Client, Vehicle, TransportCompany, Van, Airplane
 
 start = True
 count = 0  # Счетчик для всех действий
 all_clients = []
 all_vehicles = []
-company_list = []
-id = 0 # Номер клиента
+id_counter = 0  # Номер клиента
 
-def validation(prompt): # готово
+def validation(prompt):
     while True:
         num = input(prompt)
         if num.isdigit():
@@ -15,8 +14,7 @@ def validation(prompt): # готово
         else:
             print("Введите необходимую информацию числом!")
 
-
-def menu(): # готово
+def menu():
     print()
     print(f" Меню ".center(70, "="))
     print("""
@@ -25,36 +23,32 @@ def menu(): # готово
         3 - Вывести список клиентов
         4 - Вывести информацию о всех транспортах
         5 - Оптимизировать распределение груза
-        6 - Выход с программы\n""")
-    
+        6 - Вывести распределение груза 
+        7 - Выход с программы\n""")
     print(f"".center(70, "="))    
     print()
 
- 
-def createCompany(name): # вроде готво
-    company = TransportCompany(name)
-    return company
+def create_company(name):
+    return TransportCompany(name)
 
-
-def createClient():  # Создание клиента # готово
+def create_client():
     name = input("Введите имя клиента:")
     cargo_weight = validation("Введите вес груза клиента:")
 
     while True:
         vip = validation("Введите, имеет ли клиент VIP(1 - да, 2 - нет): ")
-        if vip == 1 or vip == 2:
-            is_vip = True if vip == 1 else False
+        if vip in [1, 2]:
+            is_vip = vip == 1
             break
         else:
             print("Введите 1, если клиент имеет VIP. Если нет, введите 2.")
 
-    all_clients.append(Client(name, cargo_weight, is_vip))
+    client = Client(name, cargo_weight, is_vip)
+    all_clients.append(client)
     print("Клиент успешно создан!")
 
-
-def createTransport():  # Добавление транспорт # готово
+def create_transport():
     while True:
-        global type_veh
         type_veh = validation("\nВыберите транспорт для добавления(1 - самолет, 2 - фургон): ")
 
         if type_veh == 1:
@@ -68,8 +62,8 @@ def createTransport():  # Добавление транспорт # готово
             capacity = validation("Введите грузоподъёмность фургона: ")
             while True:
                 is_refrigerated = validation("Введите, имеет ли клиент холодильник (1 - да, 2 - нет): ")
-                if is_refrigerated == 1 or is_refrigerated == 2:
-                    is_refrigerated = True if is_refrigerated == 1 else False
+                if is_refrigerated in [1, 2]:
+                    is_refrigerated = is_refrigerated == 1
                     break
                 else:
                     print("Введите 1, если есть холодильник, 2 если нет.")
@@ -80,79 +74,74 @@ def createTransport():  # Добавление транспорт # готово
         else:
             print("Выберите 1, если хотите добавить самолет, 2 - если фургон.")
 
-
-def printAllTransport(): # готово
-    idVeh = 0 # Номер транспорта
-    global typeVeh
-    print()
-    print("Все транспортные средства: ".center(70, "="))
-    print()
-    for vehicle in all_vehicles:
-        idVeh += 1
-        global type_veh
-        if type_veh == 1:
-            typeVeh = "самолёт" 
-        else:
-            typeVeh = "фургон" 
-        print(f"{idVeh}) {vehicle}")
+def print_all_transport():
+    print("\nВсе транспортные средства: ".center(70, "="))
+    for idx, vehicle in enumerate(all_vehicles, start=1):
+        print(f"{idx}) {vehicle}")
     print()
 
+def print_all_clients():
+    print("\nВсе клиенты: ".center(70, "="))
+    for idx, client in enumerate(all_clients, start=1):
+        vip_status = "Есть" if client.is_vip else "Нет"
+        print(f"{idx}. Имя: {client.name}. Вес груза: {client.cargo_weight}. VIP-статус: {vip_status}")
+    print()
 
-def printAllClients(): # готово
-    global id
-    print()
-    print("Все клиенты: ".center(70, "="))
-    print()
-    for client in all_clients:
-        id += 1
-        vip = "Есть" if client.is_vip == True else "Нет"
-        print(f"{id}. Имя: {client.name}. Вес груза: {client.cargo_weight}. VIP-статус: {vip} ")
-    print()
-    
-
-def optimizeCargoDistribution():
-    pass
+def display_cargo_distribution(company):
+    print("\nРезультат распределения груза:")
+    for vehicle in company.vehicles:
+        print(vehicle)
+        for client in vehicle.clients_list:
+            print(f" - {client.name}: {client.cargo_weight} тонн, VIP: {'да' if client.is_vip else 'нет'}")
 
 def main():
     global start, count
     name = input("Введите название транспортной компании: ")
-    company = createCompany(name)
+    company = create_company(name)
 
     while start:
-
         menu()
         num = validation("Выберите необходимый пункт: ")
 
-        if num == 1:  # Создание клиента
-            createClient()
+        if num == 1:
+            create_client()
             count += 1
 
-        elif num == 2:  # Добавление транспорт
-            createTransport()
+        elif num == 2:
+            create_transport()
+            count += 1
+
+        elif num == 3:
+            print_all_clients()
+            count += 1
+
+        elif num == 4:
+            print_all_transport()
+            count += 1
+
+        elif num == 5:
+    # Добавляем всех клиентов в компанию
+            for client in all_clients:
+                company.add_client(client)
+    
+    # Добавляем все транспортные средства в компанию
+            for vehicle in all_vehicles:
+                company.add_vehicle(vehicle)
+            
+            company.optimize_cargo_distribution()
             count += 1
 
 
-        elif num == 3:  # Вывод всех клиентов
-            printAllClients()
-            count += 1
+        elif num == 6:
+            display_cargo_distribution(company)
 
-
-        elif num == 4:  # Вывод всех транспортных средств
-            printAllTransport()
-            count += 1
-
-
-        elif num == 4:  # Вывод всех транспортных средств
-            optimize_cargo_distribution()#################################################
-            count += 1
-
-
-        elif num == 6: # Управление компаниями
+        elif num == 7:
             start = False
-            print(f"Выход из программы. Количество проведедённых операций : {count}.")
-            break        
-        
+            print(f"Выход из программы. Количество проведедённых операций: {count}.")
+            break
+
         else:
             print("Выберите один из предложенных пунктов!!!")
 
-main()
+if __name__ == "__main__":
+    main()

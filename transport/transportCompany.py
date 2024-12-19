@@ -26,15 +26,15 @@ class TransportCompany:
             raise ValueError("client должен быть объектом класса Client")
         self.clients.append(client)
 
-    def optimize_cargo_distribution(self): # распределяет грузы клиентов по транспортным средствам
-        vip_clients = [client for client in self.clients if client.is_vip] # создает новый список, состоящий из клиентов, у которых атрибут is_vip равен True
-        other_clients = [client for client in self.clients if not client.is_vip] # создает новый список, состоящий из клиентов, у которых атрибут is_vip равен False
-        all_clients = vip_clients + other_clients
+    def optimize_cargo_distribution(self):
+        # Сортируем транспортные средства по грузоподъемности (по убыванию)
+        sorted_vehicles = sorted(self.vehicles, key=lambda v: v.capacity, reverse=True)
 
-        for client in all_clients:
-            for vehicle in self.vehicles: # цикл проходит по каждому транспортному средству в списке self.vehicles
-                if vehicle.current_load + client.cargo_weight <= vehicle.capacity: # тек.загрузка + вес груза клиента <= грузоподьемность транспорта
-                    vehicle.load_cargo(client) # загружает груз клиента в транспортное средство и обновляет текущую загрузку
+        for client in self.clients:
+            for vehicle in sorted_vehicles:
+                if vehicle.current_load + client.cargo_weight <= vehicle.capacity:
+                    vehicle.current_load += client.cargo_weight  # Добавляем груз
+                    print(f"Груз клиента {client.name} (вес: {client.cargo_weight}) распределен на транспортное средство {vehicle.vehicle_id}")
                     break
 
 
